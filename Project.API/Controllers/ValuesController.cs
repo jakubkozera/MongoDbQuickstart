@@ -1,20 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Project.Common.Types;
+using Project.Core;
 
-namespace MongoDbQuickstart.Controllers
+namespace Project.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private readonly IRepository<User> _repository;
+
+        public ValuesController(IRepository<User> repository)
+        {
+            _repository = repository;
+        }
+
+
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public async Task<ActionResult<IEnumerable<string>>> Get()
         {
-            return new string[] { "value1", "value2" };
+            var users = await _repository.FindAsync(c => true);
+
+            return Ok(users);
         }
 
         // GET api/values/5
